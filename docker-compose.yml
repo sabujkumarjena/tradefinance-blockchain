@@ -1,0 +1,401 @@
+#
+# Copyright IBM Corp All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+version: "2"
+
+networks:
+  basic:
+
+services:
+  # ca.buyerBank.tf.com:
+  #   image: hyperledger/fabric-ca:1.4.3
+  #   environment:
+  #     - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+  #     - FABRIC_CA_SERVER_CA_NAME=ca.buyerBank.tf.com
+  #     - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.buyerBank.tf.com-cert.pem
+  #     - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/707c020aa01ae1cb285a969a08b3d3280746b1762077ac9fa7ff862ead7e83e9_sk
+  #   ports:
+  #     - "6054:7054"
+  #   command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+  #   volumes:
+  #     - ./crypto-config/peerOrganizations/buyerBank.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
+  #   container_name: ca.buyerBank.tf.com
+  #   networks:
+  #     - basic
+  # ca.sellerBank.tf.com:
+  #   image: hyperledger/fabric-ca:1.4.3
+  #   environment:
+  #     - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+  #     - FABRIC_CA_SERVER_CA_NAME=ca.sellerBank.tf.com
+  #     - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.sellerBank.tf.com-cert.pem
+  #     - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/566247f8edc08e4a325ef1c316932fec027a82e85c50f4f7e21b6c91bc51979c_sk
+  #   ports:
+  #     - "7054:7054"
+  #   command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+  #   volumes:
+  #     - ./crypto-config/peerOrganizations/sellerBank.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
+  #   container_name: ca.sellerBank.tf.com
+  #   networks:
+  #     - basic
+
+
+  # ca.buyer.tf.com:
+  #   image: hyperledger/fabric-ca:1.4.3
+  #   environment:
+  #     - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+  #     - FABRIC_CA_SERVER_CA_NAME=ca.buyer.tf.com
+  #     - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.buyer.tf.com-cert.pem
+  #     - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/65a257ce3d741a5ec2d97d46f3ba9233e3f352423ec43800e2d788dde10e2041_sk
+  #   ports:
+  #     - "8054:7054"
+  #   command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+  #   volumes:
+  #     - ./crypto-config/peerOrganizations/buyer.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
+  #   container_name: ca.buyer.tf.com
+  #   networks:
+  #     - basic
+
+  # ca.seller.tf.com:
+  #   image: hyperledger/fabric-ca:1.4.3
+  #   environment:
+  #     - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+  #     - FABRIC_CA_SERVER_CA_NAME=ca.seller.tf.com
+  #     - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.seller.tf.com-cert.pem
+  #     - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/44c35561b16152f95477bcfdd2f198858569d36bc58df6e15e10ccaed1762e6c_sk
+  #   ports:
+  #     - "9054:7054"
+  #   command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+  #   volumes:
+  #     - ./crypto-config/peerOrganizations/seller.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
+  #   container_name: ca.seller.tf.com
+  #   networks:
+  #     - basic
+
+  orderer.tf.com:
+    container_name: orderer.tf.com
+    image: hyperledger/fabric-orderer:1.4.3
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
+    command: orderer
+    ports:
+      - 7050:7050
+    volumes:
+      - ./config/:/etc/hyperledger/configtx
+      - ./crypto-config/ordererOrganizations/tf.com/orderers/orderer.tf.com/:/etc/hyperledger/msp/orderer
+      - ./crypto-config/peerOrganizations/buyer.tf.com/peers/peer0.buyer.tf.com/:/etc/hyperledger/msp/peerBuyer
+      - ./crypto-config/peerOrganizations/seller.tf.com/peers/peer0.seller.tf.com/:/etc/hyperledger/msp/peerSeller
+      - ./crypto-config/peerOrganizations/buyerBank.tf.com/peers/peer0.buyerBank.tf.com/:/etc/hyperledger/msp/peerBuyerBank
+      - ./crypto-config/peerOrganizations/sellerBank.tf.com/peers/peer0.sellerBank.tf.com/:/etc/hyperledger/msp/peerSellerBank
+      - ./crypto-config/peerOrganizations/shipping.tf.com/peers/peer0.shipping.tf.com/:/etc/hyperledger/msp/peerShipping
+    networks:
+      - basic
+
+  peer0.buyerBank.tf.com:
+    container_name: peer0.buyerBank.tf.com
+    image: hyperledger/fabric-peer:1.4.3
+    environment:
+      - GODEBUG=netdns=go
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.buyerBank.tf.com
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_LOCALMSPID=BuyerBankMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.buyerBank.tf.com:7051
+      # # the following setting starts chaincode containers on the same
+      # # bridge network as the peers
+      # # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    ports:
+      - 6051:7051
+      - 7053:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/buyerBank.tf.com/peers/peer0.buyerBank.tf.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/buyerBank.tf.com/users:/etc/hyperledger/msp/users
+      - ./config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.tf.com
+      - couchdb0
+    networks:
+      - basic
+
+  couchdb0:
+    container_name: couchdb0
+    image: hyperledger/fabric-couchdb:0.4.15
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 5984:5984
+    networks:
+      - basic
+
+  peer0.sellerBank.tf.com:
+    container_name: peer0.sellerBank.tf.com
+    image: hyperledger/fabric-peer:1.4.3
+    environment:
+      - GODEBUG=netdns=go
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.sellerBank.tf.com
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_LOCALMSPID=SellerBankMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.sellerBank.tf.com:7051
+      # # the following setting starts chaincode containers on the same
+      # # bridge network as the peers
+      # # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    ports:
+      - 7051:7051
+      - 4053:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/sellerBank.tf.com/peers/peer0.sellerBank.tf.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/sellerBank.tf.com/users:/etc/hyperledger/msp/users
+      - ./config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.tf.com
+      - couchdb3
+    networks:
+      - basic
+
+  couchdb3:
+    container_name: couchdb3
+    image: hyperledger/fabric-couchdb:0.4.15
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 8984:5984
+    networks:
+      - basic
+
+  peer0.buyer.tf.com:
+    container_name: peer0.buyer.tf.com
+    image: hyperledger/fabric-peer:1.4.3
+    environment:
+      - GODEBUG=netdns=go
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.buyer.tf.com
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_LOCALMSPID=BuyerMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.buyer.tf.com:7051
+      # # the following setting starts chaincode containers on the same
+      # # bridge network as the peers
+      # # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    ports:
+      - 8051:7051
+      - 8053:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/buyer.tf.com/peers/peer0.buyer.tf.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/buyer.tf.com/users:/etc/hyperledger/msp/users
+      - ./config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.tf.com
+      - couchdb1
+    networks:
+      - basic
+
+  couchdb1:
+    container_name: couchdb1
+    image: hyperledger/fabric-couchdb:0.4.15
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 6984:5984
+    networks:
+      - basic
+
+  peer0.seller.tf.com:
+    container_name: peer0.seller.tf.com
+    image: hyperledger/fabric-peer:1.4.3
+    environment:
+      - GODEBUG=netdns=go
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.seller.tf.com
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_LOCALMSPID=SellerMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.seller.tf.com:7051
+      # # the following setting starts chaincode containers on the same
+      # # bridge network as the peers
+      # # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb2:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    ports:
+      - 9051:7051
+      - 9053:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/seller.tf.com/peers/peer0.seller.tf.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/seller.tf.com/users:/etc/hyperledger/msp/users
+      - ./config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.tf.com
+      - couchdb2
+    networks:
+      - basic
+
+  couchdb2:
+    container_name: couchdb2
+    image: hyperledger/fabric-couchdb:0.4.15
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 7984:5984
+    networks:
+      - basic
+
+  peer0.shipping.tf.com:
+    container_name: peer0.shipping.tf.com
+    image: hyperledger/fabric-peer:1.4.3
+    environment:
+      - GODEBUG=netdns=go
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.shipping.tf.com
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_LOCALMSPID=ShippingMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.shipping.tf.com:7051
+      # # the following setting starts chaincode containers on the same
+      # # bridge network as the peers
+      # # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb4:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    ports:
+      - 3051:7051
+      - 3053:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/shipping.tf.com/peers/peer0.shipping.tf.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/shipping.tf.com/users:/etc/hyperledger/msp/users
+      - ./config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.tf.com
+      - couchdb4
+    networks:
+      - basic
+
+  couchdb4:
+    container_name: couchdb4
+    image: hyperledger/fabric-couchdb:0.4.15
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 3984:5984
+    networks:
+      - basic
+
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:1.4.3
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.buyer.tf.com:7051
+      - CORE_PEER_LOCALMSPID=BuyerMSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/buyer.tf.com/users/Admin@buyer.tf.com/msp
+      - CORE_CHAINCODE_KEEPALIVE=10
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./chaincode/:/opt/gopath/src/github.com/
+      - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ./config:/etc/hyperledger/configtx
+    networks:
+      - basic
+    depends_on:
+      - orderer.tf.com
+      - peer0.buyerBank.tf.com
+      - couchdb0
+      - peer0.sellerBank.tf.com
+      - couchdb3
+      - peer0.buyer.tf.com
+      - couchdb1
+      - peer0.seller.tf.com
+      - couchdb2
+      - peer0.shipping.tf.com
+      - couchdb4
+
