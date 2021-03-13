@@ -9,69 +9,69 @@ networks:
   basic:
 
 services:
-  # ca.buyerBank.tf.com:
-  #   image: hyperledger/fabric-ca:1.4.3
-  #   environment:
-  #     - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-  #     - FABRIC_CA_SERVER_CA_NAME=ca.buyerBank.tf.com
-  #     - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.buyerBank.tf.com-cert.pem
-  #     - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/707c020aa01ae1cb285a969a08b3d3280746b1762077ac9fa7ff862ead7e83e9_sk
-  #   ports:
-  #     - "6054:7054"
-  #   command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
-  #   volumes:
-  #     - ./crypto-config/peerOrganizations/buyerBank.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
-  #   container_name: ca.buyerBank.tf.com
-  #   networks:
-  #     - basic
-  # ca.sellerBank.tf.com:
-  #   image: hyperledger/fabric-ca:1.4.3
-  #   environment:
-  #     - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-  #     - FABRIC_CA_SERVER_CA_NAME=ca.sellerBank.tf.com
-  #     - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.sellerBank.tf.com-cert.pem
-  #     - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/566247f8edc08e4a325ef1c316932fec027a82e85c50f4f7e21b6c91bc51979c_sk
-  #   ports:
-  #     - "7054:7054"
-  #   command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
-  #   volumes:
-  #     - ./crypto-config/peerOrganizations/sellerBank.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
-  #   container_name: ca.sellerBank.tf.com
-  #   networks:
-  #     - basic
+  ca.buyerBank.tf.com:
+    image: hyperledger/fabric-ca:1.4.3
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.buyerBank.tf.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.buyerBank.tf.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/3e019157a8dca3ed68f17e9b94c49dabc79fcc2425eabca6c34fa26253cb2915_sk
+    ports:
+      - "6054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/buyerBank.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.buyerBank.tf.com
+    networks:
+      - basic
+  ca.sellerBank.tf.com:
+    image: hyperledger/fabric-ca:1.4.3
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.sellerBank.tf.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.sellerBank.tf.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/f2dfc5d4bd40052222c51112e737c9a24d9b0b3ff70b3b00a82a948d7644a368_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/sellerBank.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.sellerBank.tf.com
+    networks:
+      - basic
 
 
-  # ca.buyer.tf.com:
-  #   image: hyperledger/fabric-ca:1.4.3
-  #   environment:
-  #     - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-  #     - FABRIC_CA_SERVER_CA_NAME=ca.buyer.tf.com
-  #     - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.buyer.tf.com-cert.pem
-  #     - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/65a257ce3d741a5ec2d97d46f3ba9233e3f352423ec43800e2d788dde10e2041_sk
-  #   ports:
-  #     - "8054:7054"
-  #   command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
-  #   volumes:
-  #     - ./crypto-config/peerOrganizations/buyer.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
-  #   container_name: ca.buyer.tf.com
-  #   networks:
-  #     - basic
+  ca.buyer.tf.com:
+    image: hyperledger/fabric-ca:1.4.3
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.buyer.tf.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.buyer.tf.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/ef6839c64908b0de52603883f31ecf362e70d9f035fd9d86fa42f169767eeed5_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/buyer.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.buyer.tf.com
+    networks:
+      - basic
 
-  # ca.seller.tf.com:
-  #   image: hyperledger/fabric-ca:1.4.3
-  #   environment:
-  #     - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-  #     - FABRIC_CA_SERVER_CA_NAME=ca.seller.tf.com
-  #     - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.seller.tf.com-cert.pem
-  #     - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/44c35561b16152f95477bcfdd2f198858569d36bc58df6e15e10ccaed1762e6c_sk
-  #   ports:
-  #     - "9054:7054"
-  #   command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
-  #   volumes:
-  #     - ./crypto-config/peerOrganizations/seller.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
-  #   container_name: ca.seller.tf.com
-  #   networks:
-  #     - basic
+  ca.seller.tf.com:
+    image: hyperledger/fabric-ca:1.4.3
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.seller.tf.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.seller.tf.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/4456a820760f6799f63b73485e26c16d2de3cf986831bc768a8205a56d5449d0_sk
+    ports:
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/seller.tf.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.seller.tf.com
+    networks:
+      - basic
 
   orderer.tf.com:
     container_name: orderer.tf.com
@@ -113,7 +113,7 @@ services:
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
       # # https://docs.docker.com/compose/networking/
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=tf_basic
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
       # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
@@ -166,7 +166,7 @@ services:
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
       # # https://docs.docker.com/compose/networking/
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=tf_basic
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
       # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
@@ -219,7 +219,7 @@ services:
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
       # # https://docs.docker.com/compose/networking/
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=tf_basic
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
       # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
@@ -272,7 +272,7 @@ services:
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
       # # https://docs.docker.com/compose/networking/
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=tf_basic
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb2:5984
       # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
@@ -325,7 +325,7 @@ services:
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
       # # https://docs.docker.com/compose/networking/
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=tf_basic
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb4:5984
       # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD

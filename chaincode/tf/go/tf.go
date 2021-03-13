@@ -83,7 +83,7 @@ return shim.Error(err.Error())
 		return s.issueLC(APIstub, args)
 	} else if function == "acceptLC"  && mspid == "SellerBankMSP"{ //accept lc by seller's bank
 		return s.acceptLC(APIstub, args)
-	} else if function == "issueBL" && mspid == "ShippingMSP" { //by shipping company
+	} else if function == "issueBL" && mspid == "BuyerMSP" { //by shipping company
 		return s.issueBL(APIstub, args)
 	} else if function == "transferBL" { // input is lcid and new owner
 		return s.transferBL(APIstub, args)
